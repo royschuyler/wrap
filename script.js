@@ -120,43 +120,79 @@ function atan (x) {
   return Math.atan(x)
 }
 
+
+
 //********************************************************
-//CHANGEABLE VARS
-var d = 1000;
-var a = sqrt(2);
-var n = 15;
-var f1 = 1;
-var f2 = 1.1;
-var rings = 1;
-var ringStart = 0;
-var startAdd = radians(20);
-var wrapSizeS = .88;
-var wrapSizeB = 1;
-//NON-TOUCHERS
-var ringRad = radians(360/rings);
-var startRad = radians(ringStart);
-var addRad = radians(startAdd);
-var e = 1/a;
-var conicE = sqrt((a*a)-1)/a;
-var rad360 = radians(360);
-var rad180 = radians(180);
-var rad90 = radians(90);
-var radUse = radians(180)/d;
-var numArr = numbers(0,1000,1);
-var radUseArr = numbers(0,1000,radUse);
-var oneMinusCos = fancyNumbers (radUseArr,f1);
-var pathNum = arrMultiply(oneMinusCos,d/2);
-var pathRad = arrMultiply(pathNum,radUse);
-var pathx = arrSin(pathRad);
-var pathy = arrCos(pathRad,conicE);
-var ww1 = fancyww1 (radUseArr,f2,n);
-var ww2 = fancyww2 (ww1);
-var wrapRadArr = wrapRad(ww2);
-var wrapAx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeB);
-var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeB);
-var wrapBx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeS);
-var wrapBy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeS);
-var wrapCx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeB);
-var wrapCy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeB);
-console.log(wrapCx);
-console.log(wrapCy);
+function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS){
+  var obj = {
+    ax: [],
+    ay: [],
+    bx: [],
+    by: [],
+    cx: [],
+    cy: [],
+    dx: [],
+    dy: []
+  }
+
+  for (k=0;k<rings;k++){
+    var rings = rings;
+    var ringRadArr = [];
+    var mainStart = mainStart;
+    for(i=0;i<rings;i++){
+      ringRadArr.push((i+1)*radians(mainStart + (360/rings)));
+    }
+    //console.log(ringRadArr)
+
+    var d = d;
+    var a = a;
+    var n = n;
+    var f1 = f1;
+    var f2 = f2;
+    var ringStart = ringRadArr[k];
+    var startAdd = radians(startAdd);
+    var wrapSizeS = wrapSizeS;
+    //NON-TOUCHERS
+
+    var wrapSizeB = 1;
+    var ringRad = radians(360/rings);
+    var startRad = radians(ringStart);
+    var addRad = radians(startAdd);
+    var e = 1/a;
+    var conicE = sqrt((a*a)-1)/a;
+    var rad360 = radians(360);
+    var rad180 = radians(180);
+    var rad90 = radians(90);
+    var radUse = radians(180)/d;
+    var numArr = numbers(0,1000,1);
+    var radUseArr = numbers(0,1000,radUse);
+    var oneMinusCos = fancyNumbers (radUseArr,f1);
+    var pathNum = arrMultiply(oneMinusCos,d/2);
+    var pathRad = arrMultiply(pathNum,radUse);
+    var pathx = arrSin(pathRad);
+    var pathy = arrCos(pathRad,conicE);
+    var ww1 = fancyww1 (radUseArr,f2,n);
+    var ww2 = fancyww2 (ww1);
+    var wrapRadArr = wrapRad(ww2);
+    var wrapAx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeB);
+    var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeB);
+    var wrapBx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeS);
+    var wrapBy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeS);
+    var wrapCx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeB);
+    var wrapCy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeB);
+    var wrapDx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeS);
+    var wrapDy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeS);
+    obj.ax.push(wrapAx);
+    obj.ay.push(wrapAy);
+    obj.bx.push(wrapBx);
+    obj.by.push(wrapBy);
+    obj.cx.push(wrapCx);
+    obj.cy.push(wrapCy);
+    obj.dx.push(wrapDx);
+    obj.dy.push(wrapDy);
+  }
+    return(obj)
+  }
+
+var wrapObj = getWraps(3,0,1000,sqrt(2),15,1,1.1,0,20,.88);
+console.log(wrapObj)
