@@ -120,19 +120,41 @@ function atan (x) {
   return Math.atan(x)
 }
 
-
+//*********************shade functions*********************
+function getFront (x,y,s){
+  var frontCount;
+  for (i=0;i<x.length;i++){
+      if(i+2){
+        var hyp1 = Math.hypot(x[i], y[i]);
+        var hyp2 = Math.hypot(x[i+1], y[i+1]);
+        var hyp3 = Math.hypot(x[i+2], y[i+2]);
+        if(hyp1 < hyp2 && hyp2 > hyp3 && hyp2 > s){
+          frontCount = i;
+        }
+    }
+  }
+  return (frontCount)
+}
 
 //********************************************************
-function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS){
+function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,sHyp){
   var obj = {
     ax: [],
     ay: [],
+    aBackCount: [],
+    aFrontCount: [],
     bx: [],
     by: [],
+    bBackCount: [],
+    bFrontCount: [],
     cx: [],
     cy: [],
+    cBackCount: [],
+    cFrontCount: [],
     dx: [],
-    dy: []
+    dy: [],
+    dBackCount: [],
+    dFrontCount: []
   }
 
   for (k=0;k<rings;k++){
@@ -174,6 +196,7 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS){
     var ww1 = fancyww1 (radUseArr,f2,n);
     var ww2 = fancyww2 (ww1);
     var wrapRadArr = wrapRad(ww2);
+
     var wrapAx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeB);
     var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeB);
     var wrapBx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeS);
@@ -182,6 +205,7 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS){
     var wrapCy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeB);
     var wrapDx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeS);
     var wrapDy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeS);
+
     obj.ax.push(wrapAx);
     obj.ay.push(wrapAy);
     obj.bx.push(wrapBx);
@@ -190,9 +214,29 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS){
     obj.cy.push(wrapCy);
     obj.dx.push(wrapDx);
     obj.dy.push(wrapDy);
+
+    obj.ax.reverse();
+    obj.ay.reverse();
+    obj.bx.reverse();
+    obj.by.reverse();
+    obj.cx.reverse();
+    obj.cy.reverse();
+    obj.dx.reverse();
+    obj.dy.reverse();
+
+    obj.aBackCount.push(getFront(wrapAx,wrapAy,bHyp));
+    obj.bBackCount.push(getFront(wrapBx,wrapBy,sHyp));
+    obj.cBackCount.push(getFront(wrapCx,wrapCy,bHyp));
+    obj.dBackCount.push(getFront(wrapDx,wrapDy,sHyp));
+    //console.log()
+    obj.aFrontCount.push(d - getFront(wrapAx,wrapAy,bHyp));
+    obj.bFrontCount.push(d - getFront(wrapBx,wrapBy,sHyp));
+    obj.cFrontCount.push(d - getFront(wrapCx,wrapCy,bHyp));
+    obj.dFrontCount.push(d - getFront(wrapDx,wrapDy,sHyp));
   }
     return(obj)
   }
 
-var wrapObj = getWraps(3,0,1000,sqrt(2),15,1,1.1,0,20,.88);
-console.log(wrapObj)
+var wrapObj = getWraps(3,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
+console.log(wrapObj);
+
