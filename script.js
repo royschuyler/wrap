@@ -1,3 +1,14 @@
+function look(arr1,arr2){
+  var textx = '';
+  var texty = '';
+  for(i=0;i<wrapAx.length;i++){
+    textx += wrapAx[i] + '\n'
+    texty += wrapAy[i] + '\n'
+  }
+  //console.log(textx)
+  //console.log(texty)
+}
+
 function radians(degrees) {
   return degrees * Math.PI / 180;
 };
@@ -72,8 +83,19 @@ function arrCos(arr,n){
   } return box
 }
 
+function wrapXFun(arr,add,multiply,size){
+  var box = [];
+  for(i = 0; i < arr.length; i++){
+    box.push(sin(arr[i]+add)*multiply[i]*size)
+  } return box
+}
 
-
+function wrapYFun(pathx,e,wrapRad,radStart,pathy,size){
+  var box = [];
+  for(i = 0; i < pathx.length; i++){
+    box.push(pathx[i]*e*size*cos(wrapRad[i]+radStart)+pathy[i])
+  } return box
+}
 function sin (x) {
   return Math.sin(x)
 }
@@ -105,10 +127,17 @@ var a = sqrt(2);
 var n = 15;
 var f1 = 1;
 var f2 = 1.1;
+var rings = 1;
+var ringStart = 0;
+var startAdd = radians(20);
+var wrapSizeS = .88;
+var wrapSizeB = 1;
 //NON-TOUCHERS
+var ringRad = radians(360/rings);
+var startRad = radians(ringStart);
+var addRad = radians(startAdd);
 var e = 1/a;
 var conicE = sqrt((a*a)-1)/a;
-console.log(conicE)
 var rad360 = radians(360);
 var rad180 = radians(180);
 var rad90 = radians(90);
@@ -122,6 +151,12 @@ var pathx = arrSin(pathRad);
 var pathy = arrCos(pathRad,conicE);
 var ww1 = fancyww1 (radUseArr,f2,n);
 var ww2 = fancyww2 (ww1);
-//console.log(ww2);
 var wrapRadArr = wrapRad(ww2);
-console.log(wrapRadArr)
+var wrapAx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeB);
+var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeB);
+var wrapBx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeS);
+var wrapBy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeS);
+var wrapCx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeB);
+var wrapCy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeB);
+console.log(wrapCx);
+console.log(wrapCy);
