@@ -137,14 +137,32 @@ function getFront (x,y,s){
 }
 
 function separateFrontAndBack(d,x,y,backCount,xfront,xback,yfront,yback){
-
   for(i=0;i<d;i++){
     if(i<backCount){
-      xback.push(x[i])
-      yback.push(y[i])
+      xback.push(x[0][i])
+      yback.push(y[0][i])
     }else{
-      xfront.push(x[i])
-      yfront.push(y[i])
+      xfront.push(x[0][i])
+      yfront.push(y[0][i])
+    }
+  }
+}
+
+function equalOut (bx1,by1,bx2,by2,fx1,fy1,fx2,fy2){
+  var dif = Math.abs(bx1.length - bx2.length);
+  if(bx1.length>bx2.length){
+    for(i=bx2.length;i<bx1.length;i++){
+      bx2.push(bx2[bx2.length-1]);
+      by2.push(by2[by2.length-1]);
+      fx1.push(fx1[fx1.length-1]);
+      fy1.push(fy1[fy1.length-1]);
+    }
+  }else{
+    for(i=bx1.length;i<bx2.length;i++){
+      bx1.push(bx1[bx1.length-1]);
+      by1.push(by1[by1.length-1]);
+      fx2.push(fx2[fx2.length-1]);
+      fy2.push(fy2[fy2.length-1]);
     }
   }
 }
@@ -272,6 +290,21 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     separateFrontAndBack(d,obj.cx,obj.cy,cBackCount,obj.cxFront,obj.cxBack,obj.cyFront,obj.cyBack);
     separateFrontAndBack(d,obj.dx,obj.dy,dBackCount,obj.dxFront,obj.dxBack,obj.dyFront,obj.dyBack);
 
+    // var shadeObj = {
+    //   acObj: {
+    //     aBackCount: obj.aBackCount,
+    //     aFrontCount: obj.aFrontCount,
+    //     axBack: obj.axBack,
+    //     axFront: obj.axFront,
+    //     ayBack: obj.ayBack,
+    //     ayFront: obj.ayFront
+    //   }
+    // }
+
+
+
+    //equalOut(obj.axBack,obj.ayBack,obj.cxBack,obj.cyBack,obj.axFront,obj.ayFront,obj.cxFront,obj.cyFront);
+
 
   } //end loop
     return(obj)
@@ -285,4 +318,6 @@ console.log(wrapObj);
 //a and c front
 //ba and d back
 //c and d front and back
+
+//**********SHADE TESTS***************************
 
