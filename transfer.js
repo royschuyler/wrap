@@ -136,19 +136,27 @@ function getFront (x,y,s){
   return (frontCount)
 }
 
-function separateFrontAndBack(d,rings,x,y,backCount,xfront,xback,yfront,yback){
-  for(p=0;p<rings;p++){
-    for(i=0;i<d;i++){
-      if(i>backCount[p]){
-        xback.push(x[p][i])
-        yback.push(y[p][i])
-      }else{
-        xfront.push(x[p][i])
-        yfront.push(y[p][i])
+  function frontAndBack(backCount,x,y,axBack,axFront,ayBack,ayFront){
+    for(i=0;i<backCount.length;i++){
+      var xbtmp = [];
+      var ybtmp = [];
+      var xftmp = [];
+      var yftmp = [];
+      for(k=0;k<=x[i].length;k++){
+        if(k>backCount[i]){
+          xbtmp.push(x[i][k]);
+          ybtmp.push(y[i][k]);
+        }else{
+          xftmp.push(x[i][k]);
+          yftmp.push(y[i][k]);
+        }
       }
+      axBack.push(xbtmp);
+      ayBack.push(ybtmp)
+      axFront.push(xftmp)
+      ayFront.push(xftmp)
     }
   }
-}
 
 function equalOut (bx1,by1,bx2,by2,fx1,fy1,fx2,fy2){
   var dif = Math.abs(bx1.length - bx2.length);
@@ -304,26 +312,10 @@ var wrapObj = getWraps(2,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
 //console.log(wrapObj);
 
 function more (obj){
-
-  for(i=0;i<obj.aBackCount.length;i++){
-    var xbtmp = [];
-    var ybtmp = [];
-    var xftmp = [];
-    var yftmp = [];
-    for(k=0;k<=obj.ax[i].length;k++){
-      if(k>obj.aBackCount[i]){
-        xbtmp.push(obj.ax[i][k]);
-        ybtmp.push(obj.ay[i][k]);
-      }else{
-        xftmp.push(obj.ax[i][k]);
-        yftmp.push(obj.ay[i][k]);
-      }
-    }
-    obj.axBack.push(xbtmp);
-    obj.ayBack.push(ybtmp)
-    obj.axFront.push(xftmp)
-    obj.ayFront.push(xftmp)
-  }
+  frontAndBack(obj.aBackCount,obj.ax,obj.ay,obj.axBack,obj.axFront,obj.ayBack,obj.ayFront);
+  frontAndBack(obj.bBackCount,obj.bx,obj.by,obj.bxBack,obj.bxFront,obj.byBack,obj.byFront);
+  frontAndBack(obj.cBackCount,obj.cx,obj.cy,obj.cxBack,obj.cxFront,obj.cyBack,obj.cyFront);
+  frontAndBack(obj.dBackCount,obj.dx,obj.dy,obj.dxBack,obj.dxFront,obj.dyBack,obj.dyFront);
   return obj
 }
 
