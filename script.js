@@ -136,6 +136,19 @@ function getFront (x,y,s){
   return (frontCount)
 }
 
+function separateFrontAndBack(d,x,y,backCount,xfront,xback,yfront,yback){
+
+  for(i=0;i<d;i++){
+    if(i<backCount){
+      xback.push(x[i])
+      yback.push(y[i])
+    }else{
+      xfront.push(x[i])
+      yfront.push(y[i])
+    }
+  }
+}
+
 //********************************************************
 function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,sHyp){
   var obj = {
@@ -143,18 +156,34 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     ay: [],
     aBackCount: [],
     aFrontCount: [],
+    axBack: [],
+    axFront: [],
+    ayBack: [],
+    ayFront: [],
     bx: [],
     by: [],
     bBackCount: [],
     bFrontCount: [],
+    bxBack: [],
+    bxFront: [],
+    byBack: [],
+    byFront: [],
     cx: [],
     cy: [],
     cBackCount: [],
     cFrontCount: [],
+    cxBack: [],
+    cxFront: [],
+    cyBack: [],
+    cyFront: [],
     dx: [],
     dy: [],
     dBackCount: [],
-    dFrontCount: []
+    dFrontCount: [],
+    dxBack: [],
+    dxFront: [],
+    dyBack: [],
+    dyFront: []
   }
 
   for (k=0;k<rings;k++){
@@ -164,7 +193,6 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     for(i=0;i<rings;i++){
       ringRadArr.push((i+1)*radians(mainStart + (360/rings)));
     }
-    //console.log(ringRadArr)
 
     var d = d;
     var a = a;
@@ -224,19 +252,37 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     obj.dx.reverse();
     obj.dy.reverse();
 
-    obj.aBackCount.push(getFront(wrapAx,wrapAy,bHyp));
-    obj.bBackCount.push(getFront(wrapBx,wrapBy,sHyp));
-    obj.cBackCount.push(getFront(wrapCx,wrapCy,bHyp));
-    obj.dBackCount.push(getFront(wrapDx,wrapDy,sHyp));
-    //console.log()
-    obj.aFrontCount.push(d - getFront(wrapAx,wrapAy,bHyp));
-    obj.bFrontCount.push(d - getFront(wrapBx,wrapBy,sHyp));
-    obj.cFrontCount.push(d - getFront(wrapCx,wrapCy,bHyp));
-    obj.dFrontCount.push(d - getFront(wrapDx,wrapDy,sHyp));
-  }
-    return(obj)
-  }
+    var aBackCount = getFront(wrapAx,wrapAy,bHyp);
+    var bBackCount = getFront(wrapBx,wrapBy,sHyp);
+    var cBackCount = getFront(wrapCx,wrapCy,bHyp);
+    var dBackCount = getFront(wrapDx,wrapDy,sHyp);
 
-var wrapObj = getWraps(3,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
+    obj.aBackCount.push(aBackCount);
+    obj.bBackCount.push(bBackCount);
+    obj.cBackCount.push(cBackCount);
+    obj.dBackCount.push(dBackCount);
+
+    obj.aFrontCount.push(d - aBackCount);
+    obj.bFrontCount.push(d - bBackCount);
+    obj.cFrontCount.push(d - cBackCount);
+    obj.dFrontCount.push(d - dBackCount);
+
+    separateFrontAndBack(d,obj.ax,obj.ay,aBackCount,obj.axFront,obj.axBack,obj.ayFront,obj.ayBack);
+    separateFrontAndBack(d,obj.bx,obj.by,bBackCount,obj.bxFront,obj.bxBack,obj.byFront,obj.byBack);
+    separateFrontAndBack(d,obj.cx,obj.cy,cBackCount,obj.cxFront,obj.cxBack,obj.cyFront,obj.cyBack);
+    separateFrontAndBack(d,obj.dx,obj.dy,dBackCount,obj.dxFront,obj.dxBack,obj.dyFront,obj.dyBack);
+
+
+  } //end loop
+    return(obj)
+} //end funtion
+
+var wrapObj = getWraps(1,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
 console.log(wrapObj);
+
+//in the main funtion, pair real connections
+//separate backs and fronts
+//a and c front
+//ba and d back
+//c and d front and back
 
