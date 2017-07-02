@@ -177,47 +177,6 @@ function equalOut (bx1,by1,bx2,by2,fx1,fy1,fx2,fy2){
   }
 }
 
-// function equalOut (x1,y1,x2,y2){
-//   var obj = {
-//   x1: [],
-//   y1: [],
-//   x2: [],
-//   y2: []
-//   }
-//   for(w=0;w<x1.length;w++){
-//     obj.x1.push(x1[w]);
-//     obj.y1.push(y1[w]);
-//   }
-//   for(g=0;g<x2.length;g++){
-//     obj.x2.push(x2[g]);
-//     obj.y2.push(y2[g]);
-//   }
-//   var dif = Math.abs(x1.length - x2.length);
-//      if(x1.length>x2.length){
-//        for(q=x2.length;q<x1.length;q++){
-//          obj.x2.push(x2[x2.length-1]);
-//          obj.y2.push(y2[y2.length-1]);
-//         }
-//       }else{
-//         for(q=x1.length;q<x2.length;q++){
-//           obj.x1.push(x1[x1.length-1]);
-//           obj.y1.push(y1[y1.length-1]);
-//         }
-//       }
-//   return obj
-// }
-
-
-
-// function combine(x1,x2,y1,y2,newx,newy){
-//   for(i=0;i<x1.length;i++){
-//     newx.push(x1[i]);
-//     newx.push(x2[i]);
-//     newy.push(y1[i]);
-//     newy.push(y2[i]);
-//   }
-// }
-
 //********************************************************
 function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,sHyp){
   var obj = {
@@ -257,26 +216,32 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
 
   for (k=0;k<rings;k++){
     var rings = rings;
-    var ringRadArr = [];
+    var baseArrab = [];
+    var baseArrcd = [];
+    var ringStart = ringStart;
     var mainStart = mainStart;
+    var startAdd = startAdd;
+    var base = 360/rings;
+    var abStart;
+    var cdStart;
     for(i=0;i<rings;i++){
-      ringRadArr.push((i+1)*radians(mainStart + (360/rings)));
+      baseArrab.push(radians(mainStart+(i+1)*base));
+      baseArrcd.push(radians(startAdd+mainStart+(i+1)*base));
     }
-
+    //console.log(baseArrab);
+    //console.log(baseArrcd)
     var d = d;
     var a = a;
     var n = n;
     var f1 = f1;
     var f2 = f2;
-    var ringStart = ringRadArr[k];
-    var startAdd = radians(startAdd);
-    var wrapSizeS = wrapSizeS;
     //NON-TOUCHERS
-
+    var ringStartab = baseArrab[k];
+    var ringStartcd = baseArrcd[k];
     var wrapSizeB = 1;
     var ringRad = radians(360/rings);
     var startRad = radians(ringStart);
-    var addRad = radians(startAdd);
+    var addRad = startAdd;
     var e = 1/a;
     var conicE = sqrt((a*a)-1)/a;
     var rad360 = radians(360);
@@ -294,14 +259,14 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     var ww2 = fancyww2 (ww1);
     var wrapRadArr = wrapRad(ww2);
 
-    var wrapAx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeB);
-    var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeB);
-    var wrapBx = wrapXFun(wrapRadArr,ringStart,pathx,wrapSizeS);
-    var wrapBy = wrapYFun(pathx,e,wrapRadArr,ringStart,pathy,wrapSizeS);
-    var wrapCx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeB);
-    var wrapCy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeB);
-    var wrapDx = wrapXFun(wrapRadArr,(ringStart+startAdd),pathx,wrapSizeS);
-    var wrapDy = wrapYFun(pathx,e,wrapRadArr,(ringStart+startAdd),pathy,wrapSizeS);
+    var wrapAx = wrapXFun(wrapRadArr,ringStartab,pathx,wrapSizeB);
+    var wrapAy = wrapYFun(pathx,e,wrapRadArr,ringStartab,pathy,wrapSizeB);
+    var wrapBx = wrapXFun(wrapRadArr,ringStartab,pathx,wrapSizeS);
+    var wrapBy = wrapYFun(pathx,e,wrapRadArr,ringStartab,pathy,wrapSizeS);
+    var wrapCx = wrapXFun(wrapRadArr,ringStartcd,pathx,wrapSizeB);
+    var wrapCy = wrapYFun(pathx,e,wrapRadArr,ringStartcd,pathy,wrapSizeB);
+    var wrapDx = wrapXFun(wrapRadArr,ringStartcd,pathx,wrapSizeS);
+    var wrapDy = wrapYFun(pathx,e,wrapRadArr,ringStartcd,pathy,wrapSizeS);
 
     obj.ax.push(wrapAx);
     obj.ay.push(wrapAy);
@@ -340,7 +305,7 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
     return(obj)
 } //end funtion
 
-var wrapObj = getWraps(rings,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
+var wrapObj = getWraps(rings,5,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
 
 function more (obj){
   frontAndBack(obj.aBackCount,obj.ax,obj.ay,obj.axBack,obj.axFront,obj.ayBack,obj.ayFront);
@@ -350,154 +315,105 @@ function more (obj){
   return obj
 }
 
-var moreWrapObj = more(wrapObj);
+var moreWrapObj = more(wrapObj)
 console.log(moreWrapObj)
 
-  var shadeObj = {
-  ac:{
-    axf: [],
-    ayf: [],
-    axb: [],
-    ayb: [],
-    cxf: [],
-    cyf: [],
-    cxb: [],
-    cyb: []
-  },
-  bd:{
-    bxf: [],
-    byf: [],
-    bxb: [],
-    byb: [],
-    dxf: [],
-    dyf: [],
-    dxb: [],
-    dyb: []
-  },
-  ab:{
-    axf: [],
-    ayf: [],
-    axb: [],
-    ayb: [],
-    bxf: [],
-    byf: [],
-    bxb: [],
-    byb: []
-  },
-  cd:{
-    cxf: [],
-    cyf: [],
-    cxb: [],
-    cyb: [],
-    dxf: [],
-    dyf: [],
-    dxb: [],
-    dyb: []
-  }
-}
 
-for(z=0;z<rings;z++){
-  shadeObj.ac.axf.push(moreWrapObj.axFront[z]);
-  shadeObj.ac.ayf.push(moreWrapObj.ayFront[z]);
-  shadeObj.ac.cxf.push(moreWrapObj.cxFront[z]);
-  shadeObj.ac.cyf.push(moreWrapObj.cyFront[z]);
-
-  shadeObj.ac.axb.push(moreWrapObj.axBack[z]);
-  shadeObj.ac.ayb.push(moreWrapObj.ayBack[z]);
-  shadeObj.ac.cxb.push(moreWrapObj.cxBack[z]);
-  shadeObj.ac.cyb.push(moreWrapObj.cyBack[z]);
-
-  shadeObj.bd.bxf.push(moreWrapObj.bxFront[z]);
-  shadeObj.bd.byf.push(moreWrapObj.byFront[z]);
-  shadeObj.bd.dxf.push(moreWrapObj.dxFront[z]);
-  shadeObj.bd.dyf.push(moreWrapObj.dyFront[z]);
-
-  shadeObj.bd.bxb.push(moreWrapObj.bxBack[z]);
-  shadeObj.bd.byb.push(moreWrapObj.byBack[z]);
-  shadeObj.bd.dxb.push(moreWrapObj.dxBack[z]);
-  shadeObj.bd.dyb.push(moreWrapObj.dyBack[z]);
-
-  shadeObj.cd.cxf.push(moreWrapObj.cxFront[z]);
-  shadeObj.cd.cyf.push(moreWrapObj.cyFront[z]);
-  shadeObj.cd.dxf.push(moreWrapObj.dxFront[z]);
-  shadeObj.cd.dyf.push(moreWrapObj.dyFront[z]);
-
-  shadeObj.cd.cxb.push(moreWrapObj.cxBack[z]);
-  shadeObj.cd.cyb.push(moreWrapObj.cyBack[z]);
-  shadeObj.cd.dxb.push(moreWrapObj.dxBack[z]);
-  shadeObj.cd.dyb.push(moreWrapObj.dyBack[z]);
-
-  shadeObj.ab.axf.push(moreWrapObj.axFront[z]);
-  shadeObj.ab.ayf.push(moreWrapObj.ayFront[z]);
-  shadeObj.ab.bxf.push(moreWrapObj.bxFront[z]);
-  shadeObj.ab.byf.push(moreWrapObj.byFront[z]);
-
-  shadeObj.ab.axb.push(moreWrapObj.axBack[z]);
-  shadeObj.ab.ayb.push(moreWrapObj.ayBack[z]);
-  shadeObj.ab.bxb.push(moreWrapObj.bxBack[z]);
-  shadeObj.ab.byb.push(moreWrapObj.byBack[z]);
-
-  //equalOut (bx1,by1,bx2,by2,fx1,fy1,fx2,fy2)
-  equalOut (shadeObj.ac.axb[z],shadeObj.ac.ayb[z],shadeObj.ac.cxb[z],shadeObj.ac.cyb[z],shadeObj.ac.axf[z],shadeObj.ac.ayf[z],shadeObj.ac.cxf[z],shadeObj.ac.cyf[z]);
-
- equalOut (shadeObj.bd.bxb[z],shadeObj.bd.byb[z],shadeObj.bd.dxb[z],shadeObj.bd.dyb[z],shadeObj.bd.bxf[z],shadeObj.bd.byf[z],shadeObj.bd.dxf[z],shadeObj.bd.dyf[z]);
-
- equalOut (shadeObj.cd.cxb[z],shadeObj.cd.cyb[z],shadeObj.cd.dxb[z],shadeObj.cd.dyb[z],shadeObj.cd.cxf[z],shadeObj.cd.cyf[z],shadeObj.cd.dxf[z],shadeObj.cd.dyf[z]);
-
- equalOut (shadeObj.ab.axb[z],shadeObj.ab.ayb[z],shadeObj.ab.bxb[z],shadeObj.ab.byb[z],shadeObj.ab.axf[z],shadeObj.ab.ayf[z],shadeObj.ab.bxf[z],shadeObj.ab.byf[z])
-
-}
-console.log(shadeObj);
-
-
-//look(shadeObj.ac.axb[0],shadeObj.ac.ayb[0])
 
 //**********SHADE TESTS***************************
-// var text = '';
-// var buffer = '';
-// var finalCount = 0;
+var text = '';
+var buffer = '';
+var finalCount = 0;
 
-// function plot(x1,y1,x2,y2,s){
-//    //1 = white
-//    //0 = black
-//   var scale = 1;
-//   var use = 1/(x1.length/2);
-//   var k = 0;
-//   var m = 0;
+function plot(x1,y1,x2,y2,s){
 
-//    for(i=0;i<x1.length;i++){
-//       if(k<x1.length/2){
-//         var put = use * m;
-//         m++
-//         //end should be 1
-//       }
-//       if(k>=x1.length/2){
-//         var put = use * m;
-//         m--
-//         //end should be 0
-//       }
-//       buffer += 'newbuffer' + '\n';
-//       text += 'addvalue ' + k + ' ' + x1[i] + ' ' + y1[i] + '\n';
-//       text += 'addvalue ' + k + ' ' + x2[i] + ' ' + y2[i] + '\n';
+function getLength(x1,x2){
+  if(x1.length > x2.length){
+    var length = x2.length -1;
+  }else{
+    var length = x1.length -1;
+  }
+  return length
+}
+  var length = getLength(x1,x2)
+   //1 = white
+   //0 = black
+  var scale = 1;
+  var use = 1/(x1.length/2);
+  var k = 0;
+  var m = 0;
 
-//       if(s == 's'){
-//         text += 'bcolor ' + .9 + ' ' + put + ' ' + put + ' ' + k + '\n'
-//       } else{
-//         text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + k + '\n'
-//       }
-//       k++
-//    }
+   for(i=0;i<length;i++){
+      if(k<x1.length/2){
+        var put = use * m;
+        m++
+        //end should be 1
+      }
+      if(k>=x1.length/2){
+        var put = use * m;
+        m--
+        //end should be 0
+      }
+      buffer += 'newbuffer' + '\n';
+      text += 'addvalue ' + finalCount + ' ' + x1[i] + ' ' + y1[i] + '\n';
+      text += 'addvalue ' + finalCount + ' ' + x2[i] + ' ' + y2[i] + '\n';
+
+      if(s == 's'){
+        text += 'bcolor ' + .9 + ' ' + put + ' ' + put + ' ' + finalCount + '\n'
+      } else{
+        text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + finalCount + '\n'
+      }
+      k++
+     finalCount++
+   }
+}
+
+// cd back
+// ab back
+// bd back
+// cd front
+// ab front
+// ac front
+
+// for(h=0;h<rings.length;h++){
+//   plot(moreWrapObj.cxBack[h],moreWrapObj.cyBack[h],moreWrapObj.dxBack[h],moreWrapObj.dyBack[h],'s');
+//   plot(moreWrapObj.axBack[h],moreWrapObj.ayBack[h],moreWrapObj.bxBack[h],moreWrapObj.byBack[h],'s');
+//   plot(moreWrapObj.bxBack[h],moreWrapObj.byBack[h],moreWrapObj.dxBack[h],moreWrapObj.dyBack[h],'b');
+
+//   plot(moreWrapObj.cxFront[h],moreWrapObj.cyFront[h],moreWrapObj.dxFront[h],moreWrapObj.dyFront[h],'s');
+//   plot(moreWrapObj.axFront[h],moreWrapObj.ayFront[h],moreWrapObj.bxFront[h],moreWrapObj.byFront[h],'s');
+//   plot(moreWrapObj.axFront[h],moreWrapObj.ayFront[h],moreWrapObj.cxFront[h],moreWrapObj.cyFront[h],'b');
 // }
 
-// var x1 = shadeObj.ac.axf[0];
-// var y1 = shadeObj.ac.ayf[0];
-// var x2 = shadeObj.ac.cxf[0];
-// var y2 = shadeObj.ac.cyf[0];
-// var s = 'b';
+//BACK
+plot(moreWrapObj.cxBack[0],moreWrapObj.cyBack[0],moreWrapObj.dxBack[0],moreWrapObj.dyBack[0],'s');
+plot(moreWrapObj.axBack[0],moreWrapObj.ayBack[0],moreWrapObj.bxBack[0],moreWrapObj.byBack[0],'s');
+plot(moreWrapObj.bxBack[0],moreWrapObj.byBack[0],moreWrapObj.dxBack[0],moreWrapObj.dyBack[0],'b');
 
-// plot(shadeObj.ac.axf[0],shadeObj.ac.ayf[0],shadeObj.ac.cxf[0],shadeObj.ac.cyf[0],s)
+plot(moreWrapObj.cxBack[1],moreWrapObj.cyBack[1],moreWrapObj.dxBack[1],moreWrapObj.dyBack[1],'s');
+plot(moreWrapObj.axBack[1],moreWrapObj.ayBack[1],moreWrapObj.bxBack[1],moreWrapObj.byBack[1],'s');
+plot(moreWrapObj.bxBack[1],moreWrapObj.byBack[1],moreWrapObj.dxBack[1],moreWrapObj.dyBack[1],'b');
 
-// var extra = 'blinewidth 1 all' + '\n' + 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
+plot(moreWrapObj.cxBack[2],moreWrapObj.cyBack[2],moreWrapObj.dxBack[2],moreWrapObj.dyBack[2],'s');
+plot(moreWrapObj.axBack[2],moreWrapObj.ayBack[2],moreWrapObj.bxBack[2],moreWrapObj.byBack[2],'s');
+plot(moreWrapObj.bxBack[2],moreWrapObj.byBack[2],moreWrapObj.dxBack[2],moreWrapObj.dyBack[2],'b');
 
-// var end = buffer + text + extra;
-//console.log(end);
+//FRONT
+plot(moreWrapObj.cxFront[0],moreWrapObj.cyFront[0],moreWrapObj.dxFront[0],moreWrapObj.dyFront[0],'s');
+plot(moreWrapObj.axFront[0],moreWrapObj.ayFront[0],moreWrapObj.bxFront[0],moreWrapObj.byFront[0],'s');
+plot(moreWrapObj.axFront[0],moreWrapObj.ayFront[0],moreWrapObj.cxFront[0],moreWrapObj.cyFront[0],'b');
+
+plot(moreWrapObj.cxFront[1],moreWrapObj.cyFront[1],moreWrapObj.dxFront[1],moreWrapObj.dyFront[1],'s');
+plot(moreWrapObj.axFront[1],moreWrapObj.ayFront[1],moreWrapObj.bxFront[1],moreWrapObj.byFront[1],'s');
+plot(moreWrapObj.axFront[1],moreWrapObj.ayFront[1],moreWrapObj.cxFront[1],moreWrapObj.cyFront[1],'b');
+
+plot(moreWrapObj.cxFront[2],moreWrapObj.cyFront[2],moreWrapObj.dxFront[2],moreWrapObj.dyFront[2],'s');
+plot(moreWrapObj.axFront[2],moreWrapObj.ayFront[2],moreWrapObj.bxFront[2],moreWrapObj.byFront[2],'s');
+plot(moreWrapObj.axFront[2],moreWrapObj.ayFront[2],moreWrapObj.cxFront[2],moreWrapObj.cyFront[2],'b');
+
+
+
+var extra = 'blinewidth 2 all' + '\n' + 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
+
+var end = buffer + text + extra;
+console.log(end);
