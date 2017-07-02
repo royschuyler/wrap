@@ -1,14 +1,12 @@
 var rings = 3;
 
-function look(arr1,arr2){
-  var textx = '';
-  var texty = '';
-  for(i=0;i<wrapAx.length;i++){
-    textx += wrapAx[i] + '\n'
-    texty += wrapAy[i] + '\n'
+function look(arrx,arry){
+  var text = '';
+
+  for(i=0;i<arrx.length;i++){
+    text += arrx[i] + ' ' + arry[i] + '\n'
   }
-  //console.log(textx)
-  //console.log(texty)
+  console.log(text)
 }
 
 function radians(degrees) {
@@ -138,7 +136,7 @@ function getFront (x,y,s){
   return (frontCount)
 }
 
-  function frontAndBack(backCount,x,y,axBack,axFront,ayBack,ayFront){
+  function frontAndBack(backCount,x,y,xBack,xFront,yBack,yFront){
     for(i=0;i<backCount.length;i++){
       var xbtmp = [];
       var ybtmp = [];
@@ -153,10 +151,10 @@ function getFront (x,y,s){
           yftmp.push(y[i][k]);
         }
       }
-      axBack.push(xbtmp);
-      ayBack.push(ybtmp)
-      axFront.push(xftmp)
-      ayFront.push(xftmp)
+      xBack.push(xbtmp);
+      yBack.push(ybtmp)
+      xFront.push(xftmp)
+      yFront.push(yftmp)
     }
   }
 
@@ -186,37 +184,35 @@ function equalOut (x1,y1,x2,y2){
   x2: [],
   y2: []
   }
-  for(var i=0;i<x1.length;i++){
-    obj.x1.push(x1[i]);
-    obj.y1.push(y1[i]);
+  for(var w=0;w<x1.length;w++){
+    obj.x1.push(x1[w]);
+    obj.y1.push(y1[w]);
   }
-  for(var i=0;i<x2.length;i++){
-    obj.x2.push(x2[i]);
-    obj.y2.push(y2[i]);
+  for(var g=0;g<x2.length;g++){
+    obj.x2.push(x2[g]);
+    obj.y2.push(y2[g]);
   }
   var dif = Math.abs(x1.length - x2.length);
-  if(x1.length>x2.length){
-    for(var q=0;q<dif;q++){
-      obj.x2.push(x2[x2.length-1]);
-      obj.y2.push(y2[y2.length-1]);
-    }
-  } else{
-    for(var p=0;p<dif;p++){
-      obj.x1.push(x1[x1.length-1]);
-      obj.y1.push(y1[y1.length-1]);
-    }
-  }
-  return obj
+      for(var q=0;q<dif;q++){
+        if(x1.length>x2.length){
+          obj.x2.push(x2[x2.length-1]);
+          obj.y2.push(y2[y2.length-1]);
+        }else{
+          obj.x1.push(x1[x1.length-1]);
+          obj.y1.push(y1[y1.length-1]);
+        }
+      }
+    return obj
 }
 
-function combine(x1,x2,y1,y2,newx,newy){
-  for(i=0;i<x1.length;i++){
-    newx.push(x1[i]);
-    newx.push(x2[i]);
-    newy.push(y1[i]);
-    newy.push(y2[i]);
-  }
-}
+// function combine(x1,x2,y1,y2,newx,newy){
+//   for(i=0;i<x1.length;i++){
+//     newx.push(x1[i]);
+//     newx.push(x2[i]);
+//     newy.push(y1[i]);
+//     newy.push(y2[i]);
+//   }
+// }
 
 //********************************************************
 function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,sHyp){
@@ -342,7 +338,8 @@ function getWraps(rings,mainStart,d,a,n,f1,f2,ringStart,startAdd,wrapSizeS,bHyp,
 
 var wrapObj = getWraps(rings,0,1000,sqrt(2),15,1,1.1,0,20,.88,.99,.88);
 //console.log(wrapObj);
-
+//look(wrapObj.axFront[0], wrapObj.ayFront[0])
+//frontAndBack(backCount,x,y,xBack,xFront,yBack,yFront)
 function more (obj){
   frontAndBack(obj.aBackCount,obj.ax,obj.ay,obj.axBack,obj.axFront,obj.ayBack,obj.ayFront);
   frontAndBack(obj.bBackCount,obj.bx,obj.by,obj.bxBack,obj.bxFront,obj.byBack,obj.byFront);
@@ -351,11 +348,8 @@ function more (obj){
   return obj
 }
 
-var tester = more(wrapObj);
-//console.log(tester)
-
-var newer = equalOut(tester.axFront[1],tester.ayFront[1],tester.cxFront[1],tester.cyFront[1]);
-//console.log(newer)
+var moreWrapObj = more(wrapObj);
+//console.log(moreWrapObj)
 
   var shadeObj = {
   ac:{
@@ -378,6 +372,16 @@ var newer = equalOut(tester.axFront[1],tester.ayFront[1],tester.cxFront[1],teste
     dxb: [],
     dyb: []
   },
+  ab:{
+    axf: [],
+    ayf: [],
+    axb: [],
+    ayb: [],
+    bxf: [],
+    byf: [],
+    bxb: [],
+    byb: []
+  },
   cd:{
     cxf: [],
     cyf: [],
@@ -389,57 +393,65 @@ var newer = equalOut(tester.axFront[1],tester.ayFront[1],tester.cxFront[1],teste
     dyb: []
   }
 }
-
+  // console.log(moreWrapObj.axFront[0])
+  // console.log(moreWrapObj.ayFront[0])
+for(i=0;i<rings;i++){
+  shadeObj.ac.axf.push(moreWrapObj.axFront[i]);
+  shadeObj.ac.ayf.push(moreWrapObj.ayFront[i]);
+}
+//console.log(shadeObj)
 for(z=0;z<rings;z++){
-  var acf = equalOut(tester.axFront[z],tester.ayFront[z],tester.cxFront[z],tester.cyFront[z]);
+  var acf = equalOut(moreWrapObj.axFront[z],moreWrapObj.ayFront[z],moreWrapObj.cxFront[z],moreWrapObj.cyFront[z]);
   shadeObj.ac.axf.push(acf.x1);
   shadeObj.ac.ayf.push(acf.y1);
   shadeObj.ac.cxf.push(acf.x2);
   shadeObj.ac.cyf.push(acf.y2);
 
-  var acb = equalOut(tester.axBack[z],tester.ayBack[z],tester.cxBack[z],tester.cyBack[z]);
+  var acb = equalOut(moreWrapObj.axBack[z],moreWrapObj.ayBack[z],moreWrapObj.cxBack[z],moreWrapObj.cyBack[z]);
   shadeObj.ac.axb.push(acb.x1);
   shadeObj.ac.ayb.push(acb.y1);
   shadeObj.ac.cxb.push(acb.x2);
   shadeObj.ac.cyb.push(acb.x2);
 
-  var bdf = equalOut(tester.bxFront[z],tester.byFront[z],tester.dxFront[z],tester.dyFront[z]);
+  var bdf = equalOut(moreWrapObj.bxFront[z],moreWrapObj.byFront[z],moreWrapObj.dxFront[z],moreWrapObj.dyFront[z]);
   shadeObj.bd.bxf.push(bdf.x1);
   shadeObj.bd.byf.push(bdf.y1);
   shadeObj.bd.dxf.push(bdf.x2);
   shadeObj.bd.dyf.push(bdf.y2);
 
-  var bdb = equalOut(tester.bxBack[z],tester.byBack[z],tester.dxBack[z],tester.dyBack[z]);
+  var bdb = equalOut(moreWrapObj.bxBack[z],moreWrapObj.byBack[z],moreWrapObj.dxBack[z],moreWrapObj.dyBack[z]);
   shadeObj.bd.bxb.push(bdb.x1);
   shadeObj.bd.byb.push(bdb.y1);
   shadeObj.bd.dxb.push(bdb.x2);
   shadeObj.bd.dyb.push(bdb.x2);
 
-  var cdf = equalOut(tester.cxFront[z],tester.cyFront[z],tester.dxFront[z],tester.dyFront[z]);
+  var cdf = equalOut(moreWrapObj.cxFront[z],moreWrapObj.cyFront[z],moreWrapObj.dxFront[z],moreWrapObj.dyFront[z]);
   shadeObj.cd.cxf.push(cdf.x1);
   shadeObj.cd.cyf.push(cdf.y1);
   shadeObj.cd.dxf.push(cdf.x2);
   shadeObj.cd.dyf.push(cdf.y2);
 
-  var cdb = equalOut(tester.cxBack[z],tester.cyBack[z],tester.dxBack[z],tester.dyBack[z]);
+  var cdb = equalOut(moreWrapObj.cxBack[z],moreWrapObj.cyBack[z],moreWrapObj.dxBack[z],moreWrapObj.dyBack[z]);
   shadeObj.cd.cxb.push(cdb.x1);
   shadeObj.cd.cyb.push(cdb.y1);
   shadeObj.cd.dxb.push(cdb.x2);
   shadeObj.cd.dyb.push(cdb.x2);
-}
-console.log(shadeObj)
-// function makeConnections (x1,y1,x2,y2){
-//   var obj = {
-//     acFront: {
 
-//     }
-//   }
-// }
-//in the main funtion, pair real connections
-//separate backs and fronts
-//a and c front
-//ba and d back
-//c and d front and back
+  var abf = equalOut(moreWrapObj.axFront[z],moreWrapObj.ayFront[z],moreWrapObj.bxFront[z],moreWrapObj.byFront[z]);
+  shadeObj.ab.axf.push(abf.x1);
+  shadeObj.ab.ayf.push(abf.y1);
+  shadeObj.ab.bxf.push(abf.x2);
+  shadeObj.ab.byf.push(abf.y2);
+
+  var abb = equalOut(moreWrapObj.axBack[z],moreWrapObj.ayBack[z],moreWrapObj.dxBack[z],moreWrapObj.dyBack[z]);
+  shadeObj.ab.axb.push(abb.x1);
+  shadeObj.ab.ayb.push(abb.y1);
+  shadeObj.ab.bxb.push(abb.x2);
+  shadeObj.ab.byb.push(abb.x2);
+}
+console.log(shadeObj);
+
+// look(shadeObj.bd.bxf[0],shadeObj.bd.byf[0])
 
 //**********SHADE TESTS***************************
 // var text = '';
@@ -478,14 +490,15 @@ console.log(shadeObj)
 //    }
 // }
 
-// var x1 = wrapObj.acObj.axBack;
-// var x2 = wrapObj.acObj.cxBack;
-// var y1 = wrapObj.acObj.ayBack;
-// var y2 = wrapObj.acObj.cyBack;
+// var x1 = shadeObj.ac.axf[0];
+// var y1 = shadeObj.ac.ayf[0];
+// var x2 = shadeObj.ac.cxf[0];
+// var y2 = shadeObj.ac.cyf[0];
 // var s = 'b';
-// plot(x1,y1,x2,y2,s)
+
+// plot(shadeObj.ac.axf[0],shadeObj.ac.ayf[0],shadeObj.ac.cxf[0],shadeObj.ac.cyf[0],s)
 
 // var extra = 'blinewidth 1 all' + '\n' + 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
 
 // var end = buffer + text + extra;
-// console.log(end);
+//console.log(end);
