@@ -156,10 +156,10 @@ function getFront (x,y,s){
     }
   }
 //VARS
-var bigN = 25;
+var bigN = 20;
 var smallN = 10;
 var rings = 1;
-var d = 200;
+var d = 300;
 var a = sqrt(2);
 var n = 15;
 var f1 = 1;
@@ -209,6 +209,8 @@ for(i=0;i<smallN+1;i++){
     ac: {
       x: [],
       y: [],
+      frontcount: [],
+      backCount: [],
       xf: [],
       yf: [],
       xb: [],
@@ -217,6 +219,8 @@ for(i=0;i<smallN+1;i++){
     bd: {
       x: [],
       y: [],
+      frontcount: [],
+      backCount: [],
       xf: [],
       yf: [],
       xb: [],
@@ -250,9 +254,13 @@ console.log(obj)
       obj.bd.x.push(wrapBx);
       obj.bd.y.push(wrapBy);
   }
-//console.log(obj);
 
+for(t=0;t<obj.ac.x.length;t++){
+  obj.ac.frontcount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99));
+}
 
+console.log(obj);
+//console.log(looks)
 var text = '';
 var buffer = '';
 var finalCount = 0;
@@ -267,15 +275,19 @@ function plot(x,y,length){
   var use = 1/(x.length/2);
   var k = 0;
   var m = 0;
+  var lineWidthEnd = 10;
+  var lwUse = lineWidthEnd/(x.length/2);
 
    for(i=0;i<x.length;i++){
       if(k<x.length/2){
         var put = use * m;
+        var width = lwUse * m;
         m++
         //end should be 1
       }
       if(k>=x.length/2){
         var put = use * m;
+        var width = lwUse * m;
         m--
         //end should be 0
       }
@@ -283,49 +295,44 @@ function plot(x,y,length){
       if(x[i+1]){
         text += 'addvalue ' + finalCount + ' ' + x[i] + ' ' + y[i] + '\n';
         text += 'addvalue ' + finalCount + ' ' + x[i+1] + ' ' + y[i+1] + '\n';
-        text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + finalCount + '\n'
+        text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + finalCount + '\n';
+        text += 'blinewidth ' + width + ' ' + finalCount + '\n';
         k++
         finalCount++
      }
    }
 }
-
-plot(obj.bd.x[0],obj.bd.y[0])
-plot(obj.bd.x[1],obj.bd.y[1])
-plot(obj.bd.x[2],obj.bd.y[2])
-plot(obj.bd.x[3],obj.bd.y[3])
-plot(obj.bd.x[4],obj.bd.y[4])
-plot(obj.bd.x[5],obj.bd.y[5])
-plot(obj.bd.x[6],obj.bd.y[6])
-plot(obj.bd.x[7],obj.bd.y[7])
-plot(obj.bd.x[8],obj.bd.y[8])
-plot(obj.bd.x[9],obj.bd.y[9])
-plot(obj.bd.x[10],obj.bd.y[10])
-plot(obj.bd.x[11],obj.bd.y[11])
-plot(obj.bd.x[12],obj.bd.y[12])
-plot(obj.bd.x[13],obj.bd.y[13])
-plot(obj.bd.x[14],obj.bd.y[14])
-plot(obj.bd.x[15],obj.bd.y[15])
-plot(obj.bd.x[16],obj.bd.y[16])
-plot(obj.bd.x[17],obj.bd.y[17])
-plot(obj.bd.x[18],obj.bd.y[18])
-plot(obj.bd.x[19],obj.bd.y[19])
-plot(obj.bd.x[20],obj.bd.y[20])
-plot(obj.bd.x[21],obj.bd.y[21])
-plot(obj.bd.x[22],obj.bd.y[22])
-plot(obj.bd.x[23],obj.bd.y[23])
-plot(obj.bd.x[24],obj.bd.y[24])
+plot(obj.ac.x[0],obj.ac.y[0])
+plot(obj.ac.x[1],obj.ac.y[1])
+plot(obj.ac.x[2],obj.ac.y[2])
+plot(obj.ac.x[3],obj.ac.y[3])
+plot(obj.ac.x[4],obj.ac.y[4])
+plot(obj.ac.x[5],obj.ac.y[5])
+plot(obj.ac.x[6],obj.ac.y[6])
+plot(obj.ac.x[7],obj.ac.y[7])
+plot(obj.ac.x[8],obj.ac.y[8])
+plot(obj.ac.x[9],obj.ac.y[9])
+plot(obj.ac.x[10],obj.ac.y[10])
+plot(obj.ac.x[11],obj.ac.y[11])
+plot(obj.ac.x[12],obj.ac.y[12])
+plot(obj.ac.x[13],obj.ac.y[13])
+plot(obj.ac.x[14],obj.ac.y[14])
+plot(obj.ac.x[15],obj.ac.y[15])
+plot(obj.ac.x[16],obj.ac.y[16])
+plot(obj.ac.x[17],obj.ac.y[17])
+plot(obj.ac.x[18],obj.ac.y[18])
+plot(obj.ac.x[19],obj.ac.y[19])
 
 
-var extra = 'blinewidth 1 all' + '\n' + 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
+var extra = 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
 
 var end = buffer + text + extra;
-console.log(end);
+//console.log(end);
 
 function writer(){
   var str = '';
   for(i=0;i<bigN;i++){
-    str+= 'plot(obj.bd.x[' + i + '],obj.bd.y[' + i + '])' + '\n';
+    str+= 'plot(obj.ac.x[' + i + '],obj.ac.y[' + i + '])' + '\n';
   } return str
 }
 var str = writer();
