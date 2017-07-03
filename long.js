@@ -159,10 +159,10 @@ function getFront (x,y,s){
 
 
 //VARS
-var bigN = 40;
+var bigN = 20;
 var smallN = 10;
 var rings = 1;
-var d = 300;
+var d = 100;
 var a = sqrt(2);
 var n = 15;
 var f1 = 1;
@@ -170,8 +170,8 @@ var f2 = 1.1;
 var additionalStart = 0;
 var aToCAdd = 20;
 var abBase = 0;
-var abBorder = additionalStart + abBase;
-var cdBorder = abBorder + aToCAdd;
+var abBorder = radians(additionalStart + abBase);
+var cdBorder = radians(abBorder + aToCAdd);
 var aToCUse = radians(Math.abs(abBorder-cdBorder)/bigN);
 
 var smallSize = .9;
@@ -321,7 +321,7 @@ var text = '';
 var buffer = '';
 var finalCount = 0;
 
-function plot(x,y,length){
+function plot(x,y,s){
 
 
 
@@ -351,64 +351,38 @@ function plot(x,y,length){
       if(x[i+1]){
         text += 'addvalue ' + finalCount + ' ' + x[i] + ' ' + y[i] + '\n';
         text += 'addvalue ' + finalCount + ' ' + x[i+1] + ' ' + y[i+1] + '\n';
-        text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + finalCount + '\n';
         text += 'blinewidth ' + width + ' ' + finalCount + '\n';
+        if(s == 's'){
+          text += 'bcolor ' + .9 + ' ' + put + ' ' + put + ' ' + finalCount + '\n'
+        } else{
+          text += 'bcolor ' + put + ' ' + put + ' ' + put + ' ' + finalCount + '\n'
+        }
+
+
         k++
         finalCount++
      }
    }
 }
-plot(obj.ac.xf[0],obj.ac.yf[0])
-plot(obj.ac.xf[1],obj.ac.yf[1])
-plot(obj.ac.xf[2],obj.ac.yf[2])
-plot(obj.ac.xf[3],obj.ac.yf[3])
-plot(obj.ac.xf[4],obj.ac.yf[4])
-plot(obj.ac.xf[5],obj.ac.yf[5])
-plot(obj.ac.xf[6],obj.ac.yf[6])
-plot(obj.ac.xf[7],obj.ac.yf[7])
-plot(obj.ac.xf[8],obj.ac.yf[8])
-plot(obj.ac.xf[9],obj.ac.yf[9])
-plot(obj.ac.xf[10],obj.ac.yf[10])
-plot(obj.ac.xf[11],obj.ac.yf[11])
-plot(obj.ac.xf[12],obj.ac.yf[12])
-plot(obj.ac.xf[13],obj.ac.yf[13])
-plot(obj.ac.xf[14],obj.ac.yf[14])
-plot(obj.ac.xf[15],obj.ac.yf[15])
-plot(obj.ac.xf[16],obj.ac.yf[16])
-plot(obj.ac.xf[17],obj.ac.yf[17])
-plot(obj.ac.xf[18],obj.ac.yf[18])
-plot(obj.ac.xf[19],obj.ac.yf[19])
-plot(obj.ac.xf[20],obj.ac.yf[20])
-plot(obj.ac.xf[21],obj.ac.yf[21])
-plot(obj.ac.xf[22],obj.ac.yf[22])
-plot(obj.ac.xf[23],obj.ac.yf[23])
-plot(obj.ac.xf[24],obj.ac.yf[24])
-plot(obj.ac.xf[25],obj.ac.yf[25])
-plot(obj.ac.xf[26],obj.ac.yf[26])
-plot(obj.ac.xf[27],obj.ac.yf[27])
-plot(obj.ac.xf[28],obj.ac.yf[28])
-plot(obj.ac.xf[29],obj.ac.yf[29])
-plot(obj.ac.xf[30],obj.ac.yf[30])
-plot(obj.ac.xf[31],obj.ac.yf[31])
-plot(obj.ac.xf[32],obj.ac.yf[32])
-plot(obj.ac.xf[33],obj.ac.yf[33])
-plot(obj.ac.xf[34],obj.ac.yf[34])
-plot(obj.ac.xf[35],obj.ac.yf[35])
-plot(obj.ac.xf[36],obj.ac.yf[36])
-plot(obj.ac.xf[37],obj.ac.yf[37])
-plot(obj.ac.xf[38],obj.ac.yf[38])
-plot(obj.ac.xf[39],obj.ac.yf[39])
-
-
+plot(obj.cd.xf[0],obj.cd.yf[0],"s")
+plot(obj.cd.xf[1],obj.cd.yf[1],"s")
+plot(obj.cd.xf[2],obj.cd.yf[2],"s")
+plot(obj.cd.xf[3],obj.cd.yf[3],"s")
+plot(obj.cd.xf[4],obj.cd.yf[4],"s")
+plot(obj.cd.xf[5],obj.cd.yf[5],"s")
+plot(obj.cd.xf[6],obj.cd.yf[6],"s")
+plot(obj.cd.xf[7],obj.cd.yf[7],"s")
+plot(obj.cd.xf[8],obj.cd.yf[8],"s")
+plot(obj.cd.xf[9],obj.cd.yf[9],"s")
 var extra = 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
 
 var end = buffer + text + extra;
-//console.log(end);
+console.log(end);
 
 function writer(){
   var str = '';
-  for(i=0;i<bigN;i++){
-    str+= 'plot(obj.ac.xf[' + i + '],obj.ac.yf[' + i + '])' + '\n';
+  for(i=0;i<smallN;i++){
+    str+= 'plot(obj.cd.xf[' + i + '],obj.cd.yf[' + i + '],"s")' + '\n';
   } return str
 }
 var str = writer();
