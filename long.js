@@ -159,7 +159,7 @@ function getFront (x,y,s){
 
 
 //VARS
-var bigN = 20;
+var bigN = 40;
 var smallN = 10;
 var rings = 1;
 var d = 300;
@@ -200,7 +200,6 @@ for(i=0;i<bigN+1;i++){
   aToCArr.push(abBorder + (i*aToCUse))
 }
 
-
 var sizeArr = [];
 var hypArr = [];
 for(i=0;i<smallN+1;i++){
@@ -232,6 +231,8 @@ for(i=0;i<smallN+1;i++){
     ab: {
       x: [],
       y: [],
+      frontCount: [],
+      backCount: [],
       xf: [],
       yf: [],
       xb: [],
@@ -240,13 +241,16 @@ for(i=0;i<smallN+1;i++){
     cd: {
       x: [],
       y: [],
+      frontCount: [],
+      backCount: [],
       xf: [],
       yf: [],
       xb: [],
       yb: []
     }
   }
-console.log(obj)
+ //***************AC AND BD LONG************************************
+  //get wraps for ac and bd
   for(y=0;y<aToCArr.length;y++){
       var wrapAx = wrapXFun(wrapRadArr,aToCArr[y],pathx,wrapSizeB);
       var wrapAy = wrapYFun(pathx,e,wrapRadArr,aToCArr[y],pathy,wrapSizeB);
@@ -257,22 +261,62 @@ console.log(obj)
       obj.bd.x.push(wrapBx);
       obj.bd.y.push(wrapBy);
   }
-
+//get front/back counts for ac and bd
 for(t=0;t<obj.ac.x.length;t++){
   obj.ac.frontCount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99).frontCount);
   obj.ac.backCount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99).backCount);
   obj.bd.frontCount.push(getFront(obj.bd.x[t],obj.bd.y[t],smallSize).frontCount);
   obj.bd.backCount.push(getFront(obj.bd.x[t],obj.bd.y[t],smallSize).backCount);
 }
-// separate ac back and front
+// separate back and front for ac and bd
 for(t=0;t<obj.ac.x.length;t++){
-  var acObj = frontAndBack(obj.ac.frontCount[t],obj.ac.x[t],obj.ac.y[t])
+  var acObj = frontAndBack(obj.ac.frontCount[t],obj.ac.x[t],obj.ac.y[t]);
+  var bdObj = frontAndBack(obj.bd.frontCount[t],obj.bd.x[t],obj.bd.y[t]);
   obj.ac.xf.push(acObj.xf);
   obj.ac.xb.push(acObj.xb);
+  obj.ac.yf.push(acObj.yf);
+  obj.ac.yb.push(acObj.yb);
+  obj.bd.xf.push(bdObj.xf);
+  obj.bd.xb.push(bdObj.xb);
+  obj.bd.yf.push(bdObj.yf);
+  obj.bd.yb.push(bdObj.yb);
 }
 
+//******************AB ABD CD SHORT***********************************
+  //get wraps for ac and bd
+  for(y=0;y<sizeArr.length;y++){
+      var wrapAx = wrapXFun(wrapRadArr,abBorder,pathx,sizeArr[y]);
+      var wrapAy = wrapYFun(pathx,e,wrapRadArr,abBorder,pathy,sizeArr[y]);
+      var wrapBx = wrapXFun(wrapRadArr,cdBorder,pathx,sizeArr[y]);
+      var wrapBy = wrapYFun(pathx,e,wrapRadArr,cdBorder,pathy,sizeArr[y]);
+      obj.ab.x.push(wrapAx);
+      obj.ab.y.push(wrapAy);
+      obj.cd.x.push(wrapBx);
+      obj.cd.y.push(wrapBy);
+  }
+
+//get front/back counts for ab and cd
+for(t=0;t<obj.ab.x.length;t++){
+  obj.ab.frontCount.push(getFront(obj.ab.x[t],obj.ab.y[t],smallSize).frontCount);
+  obj.ab.backCount.push(getFront(obj.ab.x[t],obj.ab.y[t],smallSize).backCount);
+  obj.cd.frontCount.push(getFront(obj.cd.x[t],obj.cd.y[t],smallSize).frontCount);
+  obj.cd.backCount.push(getFront(obj.cd.x[t],obj.cd.y[t],smallSize).backCount);
+}
+
+// separate back and front for ac and bd
+for(t=0;t<obj.ab.x.length;t++){
+  var abObj = frontAndBack(obj.ab.frontCount[t],obj.ab.x[t],obj.ab.y[t]);
+  var cdObj = frontAndBack(obj.cd.frontCount[t],obj.cd.x[t],obj.cd.y[t]);
+  obj.ab.xf.push(abObj.xf);
+  obj.ab.xb.push(abObj.xb);
+  obj.ab.yf.push(abObj.yf);
+  obj.ab.yb.push(abObj.yb);
+  obj.cd.xf.push(cdObj.xf);
+  obj.cd.xb.push(cdObj.xb);
+  obj.cd.yf.push(cdObj.yf);
+  obj.cd.yb.push(cdObj.yb);
+}
 console.log(obj);
-//console.log(looks)
 var text = '';
 var buffer = '';
 var finalCount = 0;
@@ -287,7 +331,7 @@ function plot(x,y,length){
   var use = 1/(x.length/2);
   var k = 0;
   var m = 0;
-  var lineWidthEnd = 10;
+  var lineWidthEnd = 3;
   var lwUse = lineWidthEnd/(x.length/2);
 
    for(i=0;i<x.length;i++){
@@ -314,26 +358,46 @@ function plot(x,y,length){
      }
    }
 }
-plot(obj.ac.x[0],obj.ac.y[0])
-plot(obj.ac.x[1],obj.ac.y[1])
-plot(obj.ac.x[2],obj.ac.y[2])
-plot(obj.ac.x[3],obj.ac.y[3])
-plot(obj.ac.x[4],obj.ac.y[4])
-plot(obj.ac.x[5],obj.ac.y[5])
-plot(obj.ac.x[6],obj.ac.y[6])
-plot(obj.ac.x[7],obj.ac.y[7])
-plot(obj.ac.x[8],obj.ac.y[8])
-plot(obj.ac.x[9],obj.ac.y[9])
-plot(obj.ac.x[10],obj.ac.y[10])
-plot(obj.ac.x[11],obj.ac.y[11])
-plot(obj.ac.x[12],obj.ac.y[12])
-plot(obj.ac.x[13],obj.ac.y[13])
-plot(obj.ac.x[14],obj.ac.y[14])
-plot(obj.ac.x[15],obj.ac.y[15])
-plot(obj.ac.x[16],obj.ac.y[16])
-plot(obj.ac.x[17],obj.ac.y[17])
-plot(obj.ac.x[18],obj.ac.y[18])
-plot(obj.ac.x[19],obj.ac.y[19])
+plot(obj.ac.xf[0],obj.ac.yf[0])
+plot(obj.ac.xf[1],obj.ac.yf[1])
+plot(obj.ac.xf[2],obj.ac.yf[2])
+plot(obj.ac.xf[3],obj.ac.yf[3])
+plot(obj.ac.xf[4],obj.ac.yf[4])
+plot(obj.ac.xf[5],obj.ac.yf[5])
+plot(obj.ac.xf[6],obj.ac.yf[6])
+plot(obj.ac.xf[7],obj.ac.yf[7])
+plot(obj.ac.xf[8],obj.ac.yf[8])
+plot(obj.ac.xf[9],obj.ac.yf[9])
+plot(obj.ac.xf[10],obj.ac.yf[10])
+plot(obj.ac.xf[11],obj.ac.yf[11])
+plot(obj.ac.xf[12],obj.ac.yf[12])
+plot(obj.ac.xf[13],obj.ac.yf[13])
+plot(obj.ac.xf[14],obj.ac.yf[14])
+plot(obj.ac.xf[15],obj.ac.yf[15])
+plot(obj.ac.xf[16],obj.ac.yf[16])
+plot(obj.ac.xf[17],obj.ac.yf[17])
+plot(obj.ac.xf[18],obj.ac.yf[18])
+plot(obj.ac.xf[19],obj.ac.yf[19])
+plot(obj.ac.xf[20],obj.ac.yf[20])
+plot(obj.ac.xf[21],obj.ac.yf[21])
+plot(obj.ac.xf[22],obj.ac.yf[22])
+plot(obj.ac.xf[23],obj.ac.yf[23])
+plot(obj.ac.xf[24],obj.ac.yf[24])
+plot(obj.ac.xf[25],obj.ac.yf[25])
+plot(obj.ac.xf[26],obj.ac.yf[26])
+plot(obj.ac.xf[27],obj.ac.yf[27])
+plot(obj.ac.xf[28],obj.ac.yf[28])
+plot(obj.ac.xf[29],obj.ac.yf[29])
+plot(obj.ac.xf[30],obj.ac.yf[30])
+plot(obj.ac.xf[31],obj.ac.yf[31])
+plot(obj.ac.xf[32],obj.ac.yf[32])
+plot(obj.ac.xf[33],obj.ac.yf[33])
+plot(obj.ac.xf[34],obj.ac.yf[34])
+plot(obj.ac.xf[35],obj.ac.yf[35])
+plot(obj.ac.xf[36],obj.ac.yf[36])
+plot(obj.ac.xf[37],obj.ac.yf[37])
+plot(obj.ac.xf[38],obj.ac.yf[38])
+plot(obj.ac.xf[39],obj.ac.yf[39])
 
 
 var extra = 'drawframe no' + '\n' + 'asetticks x no' + '\n' + 'asetticks y no' + '\n' + 'asetminticks x no' + '\n' + 'asetminticks y no' + '\n' +'framewidth 0' + '\n' + 'bstyle yes no no no no no no yes no no 0' + '\n' + 'margins 0 0 0 0' + '\n' + 'range x -1.2 1.2' + '\n' + 'range y -1.2 1.2';
@@ -344,7 +408,7 @@ var end = buffer + text + extra;
 function writer(){
   var str = '';
   for(i=0;i<bigN;i++){
-    str+= 'plot(obj.ac.x[' + i + '],obj.ac.y[' + i + '])' + '\n';
+    str+= 'plot(obj.ac.xf[' + i + '],obj.ac.yf[' + i + '])' + '\n';
   } return str
 }
 var str = writer();
