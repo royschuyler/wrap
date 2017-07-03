@@ -120,41 +120,44 @@ function atan (x) {
 
 //*********************shade functions*********************
 function getFront (x,y,s){
-  var frontCount;
+  var obj = {
+    frontCount: 0,
+    backCount: 0
+  }
   for (i=0;i<x.length;i++){
     if(i+2){
       var hyp1 = Math.hypot(x[i], y[i]);
       var hyp2 = Math.hypot(x[i+1], y[i+1]);
       var hyp3 = Math.hypot(x[i+2], y[i+2]);
       if(hyp1 < hyp2 && hyp2 > hyp3 && hyp2 > s){
-        frontCount = i;
+        obj.frontCount = i;
+        obj.backCount = x.length - i;
       }
     }
   }
-  return (frontCount)
+  return (obj)
 }
 
-  function frontAndBack(backCount,x,y,xBack,xFront,yBack,yFront){
-    for(i=0;i<backCount.length;i++){
-      var xbtmp = [];
-      var ybtmp = [];
-      var xftmp = [];
-      var yftmp = [];
-      for(k=0;k<=x[i].length;k++){
-        if(k>backCount[i]){
-          xbtmp.push(x[i][k]);
-          ybtmp.push(y[i][k]);
-        }else{
-          xftmp.push(x[i][k]);
-          yftmp.push(y[i][k]);
-        }
-      }
-      xBack.push(xbtmp);
-      yBack.push(ybtmp)
-      xFront.push(xftmp)
-      yFront.push(yftmp)
+  function frontAndBack(frontCount,x,y){
+    var obj = {
+      xb: [],
+      yb: [],
+      xf: [],
+      yf: []
     }
+    for(i=0;i<x.length;i++){
+      if(i<frontCount){
+        obj.xf.push(x[i]);
+        obj.yf.push(y[i]);
+      }else{
+        obj.xb.push(x[i]);
+        obj.yb.push(y[i]);
+      }
+    }
+    return obj
   }
+
+
 //VARS
 var bigN = 20;
 var smallN = 10;
@@ -209,7 +212,7 @@ for(i=0;i<smallN+1;i++){
     ac: {
       x: [],
       y: [],
-      frontcount: [],
+      frontCount: [],
       backCount: [],
       xf: [],
       yf: [],
@@ -219,7 +222,7 @@ for(i=0;i<smallN+1;i++){
     bd: {
       x: [],
       y: [],
-      frontcount: [],
+      frontCount: [],
       backCount: [],
       xf: [],
       yf: [],
@@ -256,7 +259,16 @@ console.log(obj)
   }
 
 for(t=0;t<obj.ac.x.length;t++){
-  obj.ac.frontcount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99));
+  obj.ac.frontCount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99).frontCount);
+  obj.ac.backCount.push(getFront(obj.ac.x[t],obj.ac.y[t],.99).backCount);
+  obj.bd.frontCount.push(getFront(obj.bd.x[t],obj.bd.y[t],smallSize).frontCount);
+  obj.bd.backCount.push(getFront(obj.bd.x[t],obj.bd.y[t],smallSize).backCount);
+}
+// separate ac back and front
+for(t=0;t<obj.ac.x.length;t++){
+  var acObj = frontAndBack(obj.ac.frontCount[t],obj.ac.x[t],obj.ac.y[t])
+  obj.ac.xf.push(acObj.xf);
+  obj.ac.xb.push(acObj.xb);
 }
 
 console.log(obj);
